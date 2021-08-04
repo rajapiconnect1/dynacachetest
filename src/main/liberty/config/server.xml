@@ -1,0 +1,48 @@
+<!-- tag::copyright[] -->
+<!-- 
+     Copyright (c) 2019, 2021 IBM Corporation and others. 
+     All rights reserved. This program and the accompanying materials 
+     are made available under the terms of the Eclipse Public License 
+     v1.0 which accompanies this distribution, and is available at
+     http://www.eclipse.org/legal/epl-v10.html 
+     
+     Contributors: 
+         IBM Corporation - Initial implementation
+-->
+<!-- end::copyright[] -->
+<server description="Liberty Server for Sessions Management">
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <!-- tag::sessionCache[] -->
+        <feature>sessionCache-1.0</feature>
+        <!-- end::sessionCache[] -->
+        <feature>jaxrs-2.1</feature>
+        <feature>jsonp-1.1</feature>
+        <feature>mpOpenAPI-2.0</feature>
+    </featureManager>
+
+    <variable name="default.http.port" defaultValue="9080"/>
+    <variable name="default.https.port" defaultValue="9443"/>
+    <variable name="app.context.root" defaultValue="guide-sessions"/>
+    <!-- tag::hazelcastLib[] -->
+    <variable name="hazelcast.lib" defaultValue="${shared.resource.dir}/hazelcast.jar"/>
+    <!-- end::hazelcastLib[] -->
+
+    <httpEndpoint httpPort="${default.http.port}" httpsPort="${default.https.port}"
+        id="defaultHttpEndpoint" host="*" />
+    <!-- tag::httpSessionCache[] -->
+    <httpSessionCache libraryRef="jCacheVendorLib"
+        uri="file:${server.config.dir}/hazelcast-config.xml" />
+    <!-- end::httpSessionCache[] -->
+    <!-- tag::library[] -->
+    <library id="jCacheVendorLib">
+    	<!-- tag::hazelcastjar[] -->
+        <file name="${hazelcast.lib}" />
+        <!-- end::hazelcastjar[] -->
+    </library>
+    <!-- end::library[] -->
+
+    <webApplication location="guide-sessions.war" contextRoot="${app.context.root}" />
+
+</server>

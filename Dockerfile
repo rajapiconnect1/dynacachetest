@@ -17,7 +17,8 @@ LABEL \
   description="This image contains the cart application running with the Open Liberty runtime."
 
 
-RUN cp ./src/main/liberty/config /config 
+RUN cp ./src/main/liberty/config/server.xml /config
+RUN cp ./src/main/liberty/config/hazelcast-config.xml /config 
 RUN cp ./target/guide-sessions.war /config
 RUN cp ./target/hazelcast-*.jar /config
 

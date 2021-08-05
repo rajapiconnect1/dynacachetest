@@ -16,7 +16,7 @@ LABEL \
   summary="The cart application from the Sessions guide" \
   description="This image contains the cart application running with the Open Liberty runtime."
 
-RUN mkdir /opt/ol/wlp/usr/shared/resources/
+
 RUN cp ./src/main/liberty/config /config 
 RUN cp ./target/guide-sessions.war /config
 RUN cp ./target/hazelcast-*.jar /config

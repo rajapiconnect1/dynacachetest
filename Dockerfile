@@ -17,13 +17,9 @@ LABEL \
   description="This image contains the cart application running with the Open Liberty runtime."
 
 
-RUN cp ./src/main/liberty/config/server.xml /config
-RUN cp ./src/main/liberty/config/hazelcast-config.xml /config 
-RUN cp ./target/guide-sessions.war /config
-RUN cp ./target/hazelcast-*.jar /config
 
-COPY --chown=1001:0 /config /config/
-COPY --chown=1001:0 /config/guide-sessions.war /config/apps
-COPY --chown=1001:0 /config/hazelcast-*.jar /opt/ol/wlp/usr/shared/resources/hazelcast.jar
+COPY --chown=1001:0 src/main/liberty/config /config/
+COPY --chown=1001:0 target/guide-sessions.war /config/apps
+COPY --chown=1001:0 target/hazelcast-*.jar /opt/ol/wlp/usr/shared/resources/hazelcast.jar
 
 RUN configure.sh

@@ -1,33 +1,28 @@
-FROM adoptopenjdk/openjdk8-openj9 AS build-stage
+FROM openliberty/open-liberty:full-java11-openj9-ubi
 
-RUN apt-get update && \
-    apt-get install -y maven unzip
+ARG VERSION=1.0
+ARG REVISION=SNAPSHOT
 
-COPY . /project
-WORKDIR /project
+LABEL \
+  org.opencontainers.image.authors="Your Name" \
+  org.opencontainers.image.vendor="Open Liberty" \
+  org.opencontainers.image.url="local" \
+  org.opencontainers.image.source="https://github.com/OpenLiberty/guide-sessions" \
+  org.opencontainers.image.version="$VERSION" \
+  org.opencontainers.image.revision="$REVISION" \
+  vendor="Open Liberty" \
+  name="cart-app" \
+  version="$VERSION-$REVISION" \
+  summary="The cart application from the Sessions guide" \
+  description="This image contains the cart application running with the Open Liberty runtime."
 
-#RUN mvn -X initialize process-resources verify => to get dependencies from maven
-#RUN mvn clean package	
-#RUN mvn --version
-RUN mvn clean package
+RUN mkdir /opt/ol/wlp/usr/shared/resources/
+RUN cp ./src/main/liberty/config /config 
+RUN cp ./target/guide-sessions.war /config
+RUN cp ./target/hazelcast-*.jar /config
 
-RUN mkdir -p /config/apps && \
-    mkdir -p /sharedlibs && \
-    cp ./src/main/liberty/config /config && \
-    cp ./target//*.*ar /config/apps/ && \
-    if [ ! -z "$(ls ./src/main/liberty/lib)" ]; then \
-        cp ./src/main/liberty/lib/* /sharedlibs; \
-    fi
-    
-FROM openliberty/open-liberty:kernel-slim-java8-openj9-ubi
-
-ARG TLS=true
-
-RUN mkdir -p /opt/ol/wlp/usr/shared/resources/
-
-COPY --chown=1001:0 --from=build-stage /config /config/
-COPY --chown=1001:0 --from=build-stage /config/apps/hazelcast-*.jar /opt/ol/wlp/usr/shared/resources/hazelcast.jar
-
-RUN features.sh
+COPY --chown=1001:0 /config /config/
+COPY --chown=1001:0 /config/guide-sessions.war /config/apps
+COPY --chown=1001:0 /config/hazelcast-*.jar /opt/ol/wlp/usr/shared/resources/hazelcast.jar
 
 RUN configure.sh

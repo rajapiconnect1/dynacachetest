@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rajdynacachetest
+spec:
+  selector:
+    matchLabels:
+      app: rajdynacachetest
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: rajdynacachetest
+    spec:
+      containers:
+      - image: rajapiconnect1/rajdynacachetest
+        name: rajdynacachetest
+        imagePullPolicy: Always
+        ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+            - containerPort: 8778
+              protocol: TCP
+        envFrom:
+            - configMapRef:
+                name: greeting-prefix
+      restartPolicy: Always
+      

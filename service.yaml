@@ -1,0 +1,28 @@
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+  name: rajdynacachetest
+  labels:
+    app: rajdynacachetest
+    app.kubernetes.io/component: rajdynacachetest
+    app.kubernetes.io/instance: rajdynacachetest
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 9090
+      targetPort: 8080
+    - name: 8443-tcp
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+    - name: 8778-tcp
+      protocol: TCP
+      port: 8778
+      targetPort: 8778
+  selector:
+    app: rajdynacachetest
+  type: ClusterIP
+  sessionAffinity: None
